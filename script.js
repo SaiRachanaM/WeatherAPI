@@ -1,49 +1,42 @@
-async function getWeather() {
-  const city = document.getElementById("city").value;
-  const apiKey = "a8e5e496c2c195fac18d2ea7478198d3";
-  const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+const apiKey = "a8e5e496c2c195fac18d2ea7478198d3";
 
-  const response = await fetch(url);
-  if (!response.ok) {
-    document.getElementById("weatherInfo").innerHTML = "❌ City not found!";
+const input = document.getElementById('cityInput');
+const searchBtn = document.getElementById('searchBtn');
+const info = document.getElementById('weatherInfo');
+
+async function getWeather() {
+  const city = input.value.trim();
+  if (!city) {
+    alert("Please enter a city name");
     return;
   }
 
-  const data = await response.json();
-  const temp = Math.round(data.main.temp);
-  const desc = data.weather[0].description;
-  const weatherMain = data.weather[0].main;
+  const url = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&appid=${apiKey}&units=metric`;
 
-  // Change background based on weather
-  changeBackground(weatherMain);
+  info.innerHTML = "Loading...";
 
-  document.getElementById("weatherInfo").innerHTML = `
-    <div class="temp">${temp}°C</div>
-    <div>${desc.charAt(0).toUpperCase() + desc.slice(1)}</div>
-    <div class="icon"><i class="wi wi-owm-${data.weather[0].id}"></i></div>
-  `;
-}
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error("City not found");
+    const data = await res.json();
 
-function changeBackground(weather) {
-  let gradient;
-  switch (weather.toLowerCase()) {
-    case 'clear':
-      gradient = 'linear-gradient(135deg, #f6d365, #fda085)';
-      break;
-    case 'clouds':
-      gradient = 'linear-gradient(135deg, #bdc3c7, #2c3e50)';
-      break;
-    case 'rain':
-      gradient = 'linear-gradient(135deg, #667db6, #0082c8, #0082c8, #667db6)';
-      break;
-    case 'thunderstorm':
-      gradient = 'linear-gradient(135deg, #373b44, #4286f4)';
-      break;
-    case 'snow':
-      gradient = 'linear-gradient(135deg, #e0eafc, #cfdef3)';
-      break;
-    default:
-      gradient = 'linear-gradient(135deg, #4facfe, #00f2fe)';
+    info.innerHTML = `
+      <div class="temp">${data.main.temp}°C</div>
+      <div class="description">${data.weather[0].description}</div>
+      <div>Humidity: ${data.main.humidity}%</div>
+      <div>Wind: ${data.wind.speed} m/s</div>
+    `;
+  } catch (error) {
+    info.innerHTML = `<p>${error.message}</p>`;
   }
-  document.body.style.background = gradient;
 }
+
+// Click handler
+searchBtn.addEventListener('click', getWeather);
+
+// Enter key handler
+input.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    getWeather();
+  }
+});
