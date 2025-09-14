@@ -1,108 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Weather App</title>
-<style>
-    /* Reset & Base Styles */
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: Arial, sans-serif;
-    }
-    body {
-        height: 100vh;
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background: linear-gradient(to bottom, #5f7995, #2c3e50);
-        color: #fff;
-    }
-
-    /* Weather Card */
-    .weather-card {
-        background: rgba(0, 0, 0, 0.6);
-        border-radius: 15px;
-        padding: 2rem;
-        width: 300px;
-        text-align: center;
-        box-shadow: 0 0 20px rgba(0,0,0,0.3);
-    }
-
-    input {
-        width: 80%;
-        padding: 0.6rem;
-        border: none;
-        border-radius: 8px;
-        outline: none;
-        font-size: 1rem;
-        margin-bottom: 1rem;
-    }
-    button {
-        padding: 0.6rem 1rem;
-        border: none;
-        border-radius: 8px;
-        background: #ff9f43;
-        color: #fff;
-        font-weight: bold;
-        cursor: pointer;
-        transition: 0.3s;
-    }
-    button:hover {
-        background: #ff6f00;
-    }
-
-    .weather-info {
-        margin-top: 1rem;
-    }
-    .temp {
-        font-size: 2rem;
-        font-weight: bold;
-    }
-    .description {
-        font-size: 1rem;
-        text-transform: capitalize;
-    }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather App</title>
+  <!-- External CSS -->
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<!-- Weather Card -->
-<div class="weather-card">
+  <div class="weather-card">
     <h2>Weather App</h2>
     <input type="text" id="cityInput" placeholder="Enter city...">
-    <button onclick="getWeather()">Search</button>
+    <button id="searchBtn">Search</button>
     <div class="weather-info" id="weatherInfo"></div>
-</div>
+  </div>
 
-<script>
-const apiKey = "a8e5e496c2c195fac18d2ea7478198d3"; // Your OpenWeather API key
-
-async function getWeather() {
-    const city = document.getElementById('cityInput').value.trim();
-    if (!city) return alert("Please enter a city name");
-
-    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
-    try {
-        const res = await fetch(url);
-        if (!res.ok) throw new Error("City not found");
-        const data = await res.json();
-
-        // Update UI
-        document.getElementById('weatherInfo').innerHTML = `
-            <div class="temp">${data.main.temp}°C</div>
-            <div class="description">${data.weather[0].description}</div>
-            <div>Humidity: ${data.main.humidity}%</div>
-            <div>Wind: ${data.wind.speed} m/s</div>
-        `;
-    } catch (error) {
-        document.getElementById('weatherInfo').innerHTML = `<p>${error.message}</p>`;
-    }
-}
-</script>
-
+  <!-- External JS -->
+  <script src="script.js"></script>
 </body>
 </html>
